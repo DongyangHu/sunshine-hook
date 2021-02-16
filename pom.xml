@@ -27,6 +27,8 @@
         <java.version>1.8</java.version>
         <fastjson.version>1.2.70</fastjson.version>
         <lombok.version>1.18.16</lombok.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
+        <commons-codec.version>1.15</commons-codec.version>
     </properties>
 
     <dependencyManagement>
@@ -34,6 +36,16 @@
             <dependency>
                 <groupId>com.hudongyang.sunshine-hook</groupId>
                 <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hudongyang.sunshine-hook</groupId>
+                <artifactId>storage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hudongyang.sunshine-hook</groupId>
+                <artifactId>engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -45,6 +57,16 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

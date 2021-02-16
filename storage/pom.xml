@@ -14,4 +14,10 @@
     <name>storage</name>
     <description>Storage for Hook Event</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.hudongyang.sunshine-hook</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

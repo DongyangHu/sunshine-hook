@@ -14,4 +14,15 @@
     <name>engine</name>
     <description>Engine for Hook Run</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.hudongyang.sunshine-hook</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hudongyang.sunshine-hook</groupId>
+            <artifactId>storage</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
