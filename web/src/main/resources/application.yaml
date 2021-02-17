@@ -15,5 +15,5 @@ sunshine-hook:
     hook-event-config:
       branch-filter: master
       event-filter: push
-      script-path: ./
+      script-path: ./trigger.sh
       secret-key: 123456
