@@ -44,6 +44,7 @@ public class EventHandler extends EventHandlerWrapper<HookEvent> {
                 log.info("execute script skip, scriptPath is null");
                 return;
             }
+            log.info("execute script:{}", scriptPath);
             List<String> commandList = new ArrayList<>();
             commandList.add(BaseConstants.SHELL_EXEC_PREFIX);
             commandList.add(BaseConstants.SHELL_EXEC_OPTIONS);
