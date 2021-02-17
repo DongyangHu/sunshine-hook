@@ -5,6 +5,7 @@ import com.hudongyang.sunshinehook.common.constants.BaseConstants;
 import com.hudongyang.sunshinehook.common.utils.ScriptUtils;
 import com.hudongyang.sunshinehook.storage.queue.HookEventQueue;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +40,10 @@ public class EventHandler extends EventHandlerWrapper<HookEvent> {
     void handle(HookEvent event) {
         try {
             log.info("received event:{}", event);
+            if (StringUtils.isEmpty(scriptPath)) {
+                log.info("execute script skip, scriptPath is null");
+                return;
+            }
             List<String> commandList = new ArrayList<>();
             commandList.add(BaseConstants.SHELL_EXEC_PREFIX);
             commandList.add(BaseConstants.SHELL_EXEC_OPTIONS);
