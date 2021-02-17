@@ -80,7 +80,7 @@ public class HookEventInterceptor implements HandlerInterceptor {
             if (eventType == EventTypeEnum.PUSH_EVENT) {
                 PushEvent event = JSON.parseObject(requestString, PushEvent.class);
                 String eventRef = event.getRef();
-                String branch = eventRef.replaceFirst(BaseConstants.BRANCH_REFS_PREFIX, "");
+                String branch = eventRef.replaceFirst(BaseConstants.GIT_HUB_BRANCH_REFS_PREFIX, "");
                 hookEvent.setSource(source);
                 hookEvent.setEventType(eventType);
                 hookEvent.setBranch(branch);

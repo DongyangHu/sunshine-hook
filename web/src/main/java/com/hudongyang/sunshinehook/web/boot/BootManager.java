@@ -44,8 +44,8 @@ public class BootManager {
     @Primary
     public EventHandler initHandler(HookEventQueue<HookEvent> queue) {
         if (Objects.nonNull(config.getEventQueueConfig()) && config.getEventQueueConfig().getConsumeDelay() > 0) {
-            return new EventHandler(queue, config.getEventQueueConfig().getConsumeDelay());
+            return new EventHandler(queue, config.getEventQueueConfig().getConsumeDelay(), config.getHookEventConfig().getScriptPath());
         }
-        return new EventHandler(queue);
+        return new EventHandler(queue, config.getHookEventConfig().getScriptPath());
     }
 }
