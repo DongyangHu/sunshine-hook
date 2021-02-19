@@ -3,6 +3,7 @@ package com.hudongyang.sunshinehook.engine.handler;
 import com.hudongyang.sunshinehook.common.bean.HookEvent;
 import com.hudongyang.sunshinehook.common.constants.BaseConstants;
 import com.hudongyang.sunshinehook.common.utils.ScriptUtils;
+import com.hudongyang.sunshinehook.storage.monitor.RunningData;
 import com.hudongyang.sunshinehook.storage.queue.HookEventQueue;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +41,7 @@ public class EventHandler extends EventHandlerWrapper<HookEvent> {
         try {
             log.info("received event:{}", event);
             if (StringUtils.isEmpty(scriptPath)) {
+                RunningData.increase(RunningData.MonitorType.FAILED_EVENT_COUNT);
                 log.info("execute script skip, scriptPath is null");
                 return;
             }
@@ -49,8 +51,15 @@ public class EventHandler extends EventHandlerWrapper<HookEvent> {
             commandList.add(BaseConstants.SHELL_EXEC_OPTIONS);
             commandList.add(scriptPath);
             boolean executeResult = ScriptUtils.executeShell(commandList.toArray(new String[0]));
-            log.info("execute script {}", executeResult ? "success" : "fail");
+            if (executeResult) {
+                RunningData.increase(RunningData.MonitorType.SUCCESS_EVENT_COUNT);
+                log.info("execute script success, script:{}", scriptPath);
+            } else {
+                RunningData.increase(RunningData.MonitorType.FAILED_EVENT_COUNT);
+                log.info("execute script failed, script:{}", scriptPath);
+            }
         } catch (Exception e) {
+            RunningData.increase(RunningData.MonitorType.FAILED_EVENT_COUNT);
             log.error("handle event exception:{}", event, e);
         }
     }

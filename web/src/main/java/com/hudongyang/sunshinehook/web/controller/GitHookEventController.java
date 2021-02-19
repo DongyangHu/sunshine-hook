@@ -5,6 +5,7 @@ import com.hudongyang.sunshinehook.common.bean.Result;
 import com.hudongyang.sunshinehook.common.constants.BaseConstants;
 import com.hudongyang.sunshinehook.common.enums.EventSourceEnum;
 import com.hudongyang.sunshinehook.engine.dispatcher.EventDispatcher;
+import com.hudongyang.sunshinehook.storage.monitor.RunningData;
 import com.hudongyang.sunshinehook.web.config.SunshineHookConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,10 @@ public class GitHookEventController {
         HookEvent event = (HookEvent) request.getAttribute(BaseConstants.REQUEST_EVENT_PARAM);
         // 分支
         if (config.getBranchFilter().stream().anyMatch(e -> event.getBranch().equals(e))) {
+            RunningData.increase(RunningData.MonitorType.RECEIVE_EVENT_COUNT);
             eventDispatcher.dispatch(event);
         } else {
+            RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             log.info("branch filter skip, branch:{}, config:{}", event.getBranch(), config.getBranchFilter());
         }
         return Result.success();

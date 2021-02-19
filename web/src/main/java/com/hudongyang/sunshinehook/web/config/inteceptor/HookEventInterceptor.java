@@ -8,6 +8,7 @@ import com.hudongyang.sunshinehook.common.constants.BaseConstants;
 import com.hudongyang.sunshinehook.common.enums.*;
 import com.hudongyang.sunshinehook.common.utils.HmacShaUtils;
 import com.hudongyang.sunshinehook.common.utils.WebUtils;
+import com.hudongyang.sunshinehook.storage.monitor.RunningData;
 import com.hudongyang.sunshinehook.web.config.SunshineHookConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,9 +39,11 @@ public class HookEventInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        RunningData.increase(RunningData.MonitorType.REQUEST_COUNT);
         String requestString = this.getRequestString(request);
         if (StringUtils.isEmpty(requestString)) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.ILLEGAL_PARAM));
+            RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             return false;
         }
 
@@ -48,6 +51,7 @@ public class HookEventInterceptor implements HandlerInterceptor {
         EventSourceEnum source = this.getSource(request);
         if (source == EventSourceEnum.UN_KNOW) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.REQUEST_SOURCE_ERROR));
+            RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             return false;
         }
 
@@ -55,6 +59,7 @@ public class HookEventInterceptor implements HandlerInterceptor {
         ResultEnum checkAuth = this.checkAuth(request, requestString);
         if (!checkAuth.isSuccess()) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.AUTH_ERROR));
+            RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             return false;
         }
 
@@ -62,10 +67,12 @@ public class HookEventInterceptor implements HandlerInterceptor {
         EventTypeEnum eventType = this.getEventType(request, source);
         if (eventType == EventTypeEnum.UN_KNOW) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.NOT_SUPPORT_EVENT));
+            RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             return false;
         }
         if (config.getEventFilter().stream().noneMatch(e -> eventType.getType().equals(e))) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.NOT_SUPPORT_EVENT));
+            RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             return false;
         }
 
