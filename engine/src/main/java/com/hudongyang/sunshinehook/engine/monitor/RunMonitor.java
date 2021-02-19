@@ -21,7 +21,7 @@ public class RunMonitor {
     private static final ScheduledThreadPoolExecutor EXECUTOR_POOL = ThreadPoolUtils.newScheduledPool(POOL_SIZE, THREAD_NAME);
 
     public void start() {
-        EXECUTOR_POOL.scheduleWithFixedDelay(this::monitor, 1, 60, TimeUnit.SECONDS);
+        EXECUTOR_POOL.scheduleWithFixedDelay(this::monitor, 1, 66, TimeUnit.SECONDS);
     }
 
     private void monitor() {
