@@ -49,7 +49,7 @@ public class EventHandler extends EventHandlerWrapper<HookEvent> {
             commandList.add(BaseConstants.SHELL_EXEC_OPTIONS);
             commandList.add(scriptPath);
             boolean executeResult = ScriptUtils.executeShell(commandList.toArray(new String[0]));
-            log.info("execute script result:{}", executeResult);
+            log.info("execute script {}", executeResult ? "success" : "fail");
         } catch (Exception e) {
             log.error("handle event exception:{}", event, e);
         }

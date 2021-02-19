@@ -1,9 +1,14 @@
 package com.hudongyang.sunshinehook.web.config;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,53 +19,44 @@ import java.util.List;
  * @date 2021/2/9 22:34
  */
 @Data
+@Slf4j
 @Configuration
 @ConfigurationProperties(prefix = "sunshine-hook.config")
-public class SunshineHookConfig {
+public class SunshineHookConfig implements ApplicationListener<ContextRefreshedEvent> {
 
     /**
-     * 事件队列配置
+     * 缓存队列大小
      */
-    private EventQueueConfig eventQueueConfig;
+    private int maxSize = 100;
 
     /**
-     * Hook事件配置
+     * 消费频率,单位:s
      */
-    private HookEventConfig hookEventConfig;
+    private long consumeDelay = 10L;
 
-    @Data
-    public static class EventQueueConfig {
-        /**
-         * 缓存队列大小
-         */
-        private int maxSize;
+    /**
+     * Hook事件分支筛选
+     */
+    private List<String> branchFilter = Collections.emptyList();
 
-        /**
-         * 消费频率,单位:s
-         */
-        private long consumeDelay;
-    }
+    /**
+     * Hook事件类型筛选
+     */
+    private List<String> eventFilter = Collections.emptyList();
 
-    @Data
-    public static class HookEventConfig {
-        /**
-         * Hook事件分支筛选
-         */
-        private List<String> branchFilter;
+    /**
+     * 收到事件后执行脚本路径
+     */
+    private String scriptPath = StringUtils.EMPTY;
 
-        /**
-         * Hook事件类型筛选
-         */
-        private List<String> eventFilter;
+    /**
+     * Hook请求加密秘钥
+     */
+    private String secretKey = StringUtils.EMPTY;
 
-        /**
-         * 收到事件后执行脚本路径
-         */
-        private String scriptPath;
-
-        /**
-         * Hook请求加密秘钥
-         */
-        private String secretKey;
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        log.info("Sunshine-Hook config, branchFilter:{}, eventFilter:{}, scriptPath:{}, secretKey:{}, consumeDelay:{}",
+                branchFilter, eventFilter, scriptPath, secretKey, consumeDelay);
     }
 }

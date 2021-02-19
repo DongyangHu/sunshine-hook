@@ -9,11 +9,9 @@ logging:
 
 sunshine-hook:
   config:
-    event-queue-config:
-      max-size: 100
-      consume-delay: 10
-    hook-event-config:
-      branch-filter: master
-      event-filter: push
-      script-path: ./trigger.sh
-      secret-key: 123456
+    max-size: 100
+    consume-delay: 10
+    branch-filter: master
+    event-filter: push
+    script-path: ./trigger.sh
+    secret-key: 123456

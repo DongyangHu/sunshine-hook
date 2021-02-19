@@ -3,6 +3,7 @@ package com.hudongyang.sunshinehook.web.boot;
 import com.hudongyang.sunshinehook.common.bean.HookEvent;
 import com.hudongyang.sunshinehook.engine.dispatcher.EventDispatcher;
 import com.hudongyang.sunshinehook.engine.handler.EventHandler;
+import com.hudongyang.sunshinehook.engine.monitor.RunMonitor;
 import com.hudongyang.sunshinehook.storage.queue.HookEventQueue;
 import com.hudongyang.sunshinehook.web.config.SunshineHookConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,7 @@ public class BootManager {
     @Bean
     @Primary
     public HookEventQueue<HookEvent> initQueue() {
-        if (Objects.nonNull(config.getEventQueueConfig()) && config.getEventQueueConfig().getMaxSize() > 0) {
-            return new HookEventQueue<>(config.getEventQueueConfig().getMaxSize());
-        }
-        return new HookEventQueue<>();
+        return new HookEventQueue<>(config.getMaxSize());
     }
 
     @Bean
@@ -43,9 +41,12 @@ public class BootManager {
     @Bean
     @Primary
     public EventHandler initHandler(HookEventQueue<HookEvent> queue) {
-        if (Objects.nonNull(config.getEventQueueConfig()) && config.getEventQueueConfig().getConsumeDelay() > 0) {
-            return new EventHandler(queue, config.getEventQueueConfig().getConsumeDelay(), config.getHookEventConfig().getScriptPath());
-        }
-        return new EventHandler(queue, config.getHookEventConfig().getScriptPath());
+        return new EventHandler(queue, config.getConsumeDelay(), config.getScriptPath());
+    }
+
+    @Bean
+    @Primary
+    public RunMonitor initMonitor() {
+        return new RunMonitor();
     }
 }

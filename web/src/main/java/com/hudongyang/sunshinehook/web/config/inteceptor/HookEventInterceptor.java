@@ -64,7 +64,7 @@ public class HookEventInterceptor implements HandlerInterceptor {
             WebUtils.sendResponse(response, Result.result(ResultEnum.NOT_SUPPORT_EVENT));
             return false;
         }
-        if (config.getHookEventConfig().getEventFilter().stream().noneMatch(e -> eventType.getType().equals(e))) {
+        if (config.getEventFilter().stream().noneMatch(e -> eventType.getType().equals(e))) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.NOT_SUPPORT_EVENT));
             return false;
         }
@@ -116,10 +116,12 @@ public class HookEventInterceptor implements HandlerInterceptor {
     private boolean check4GitHub(HttpServletRequest request, String requestString) {
         String sign = request.getHeader(GitHubHeaderEnum.SIGNATURE.getHeader());
         String sign256 = request.getHeader(GitHubHeaderEnum.SIGNATURE_256.getHeader());
-        String sha1String = BaseConstants.SHA1_PREFIX + HmacShaUtils.sha1String(requestString, config.getHookEventConfig().getSecretKey());
-        String sha256String = BaseConstants.SHA256_PREFIX + HmacShaUtils.sha256String(requestString, config.getHookEventConfig().getSecretKey());
-        log.info("sign:{}, sha1String:{}", sign, sha1String);
-        log.info("sign256:{}, sha256String:{}", sign256, sha256String);
+        String sha1String = BaseConstants.SHA1_PREFIX + HmacShaUtils.sha1String(requestString, config.getSecretKey());
+        String sha256String = BaseConstants.SHA256_PREFIX + HmacShaUtils.sha256String(requestString, config.getSecretKey());
+        if (log.isDebugEnabled()) {
+            log.debug("check sign, requestSign:{}, sha1String:{}", sign, sha1String);
+            log.debug("check sign, requestSign:{}, sha256String:{}", sign256, sha256String);
+        }
         return sha1String.equals(sign) && sha256String.equals(sign256);
     }
 

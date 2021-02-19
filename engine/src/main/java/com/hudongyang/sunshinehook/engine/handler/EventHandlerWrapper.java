@@ -1,10 +1,7 @@
 package com.hudongyang.sunshinehook.engine.handler;
 
-import com.hudongyang.sunshinehook.common.bean.HookEvent;
 import com.hudongyang.sunshinehook.common.utils.ThreadPoolUtils;
 import com.hudongyang.sunshinehook.storage.queue.HookEventQueue;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
@@ -31,10 +28,9 @@ public abstract class EventHandlerWrapper<T> {
     public EventHandlerWrapper(HookEventQueue<T> queue, long consumeDelay) {
         this.queue = queue;
         this.consumeDelay = consumeDelay;
-        this.listen();
     }
 
-    private void listen() {
+    public void start() {
         EXECUTOR_POOL.scheduleWithFixedDelay(this::consume, consumeDelay, consumeDelay, TimeUnit.SECONDS);
         log.info("event handler init success. consumeDelay:{}s", consumeDelay);
     }
@@ -43,7 +39,9 @@ public abstract class EventHandlerWrapper<T> {
         try {
             T item = queue.poll();
             if (Objects.isNull(item)) {
-                log.info("event handler queue is empty");
+                if (log.isDebugEnabled()) {
+                    log.debug("event handler queue is empty");
+                }
                 return;
             }
             LinkedList<T> eventList = new LinkedList<>();

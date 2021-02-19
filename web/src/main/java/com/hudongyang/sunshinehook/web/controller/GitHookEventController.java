@@ -33,10 +33,10 @@ public class GitHookEventController {
     public Result event(HttpServletRequest request) {
         HookEvent event = (HookEvent) request.getAttribute(BaseConstants.REQUEST_EVENT_PARAM);
         // 分支
-        if (config.getHookEventConfig().getBranchFilter().stream().noneMatch(e -> event.getBranch().equals(e))) {
+        if (config.getBranchFilter().stream().noneMatch(e -> event.getBranch().equals(e))) {
             eventDispatcher.dispatch(event);
         } else {
-            log.info("branch filter skip, branch:{}, config:{}", event.getBranch(), config.getHookEventConfig().getBranchFilter());
+            log.info("branch filter skip, branch:{}, config:{}", event.getBranch(), config.getBranchFilter());
         }
         return Result.success();
     }
