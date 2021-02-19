@@ -32,7 +32,7 @@ public abstract class EventHandlerWrapper<T> {
 
     public void start() {
         EXECUTOR_POOL.scheduleWithFixedDelay(this::consume, consumeDelay, consumeDelay, TimeUnit.SECONDS);
-        log.info("event handler init success. consumeDelay:{}s", consumeDelay);
+        log.info("event handler start success. consumeDelay:{}s", consumeDelay);
     }
 
     private void consume() {
