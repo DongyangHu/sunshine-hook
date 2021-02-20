@@ -17,7 +17,7 @@
 |配置|描述|默认值|示例|必填|
 |:----|:----|:----|:----|:----|
 |server.port|服务端口|10000|8080|×|
-|sunshine-hook.config.branch-filter|数组,需要监听的分支|master|branch1,branch2|×|
+|sunshine-hook.config.branch-filter|数组,需要监听的分支|master|b1,b2|×|
 |sunshine-hook.config.event-filter|数组,需要监听的事件类型|push|push,commit|×|
 |sunshine-hook.config.script-path|事件触发后执行的脚本路径|-|./trigger.sh|√|
 |sunshine-hook.config.secret-key|WebHook请求签名秘钥|123456|abc123|×|
