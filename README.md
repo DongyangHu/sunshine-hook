@@ -21,5 +21,5 @@
 |sunshine-hook.config.event-filter|数组,需要监听的事件类型|push|push,commit|×|
 |sunshine-hook.config.script-path|事件触发后执行的脚本路径|-|./trigger.sh|√|
 |sunshine-hook.config.secret-key|WebHook请求签名秘钥|123456|abc123|×|
-|sunshine-hook.config.consume-delay|事件监听执行间隔,控制处理事件的频率,单位:s|10|5|×|
+|sunshine-hook.config.consume-delay|事件处理频率,单位:s|10|5|×|
 |sunshine-hook.config.max-size|事件缓冲区队列大小|100|50|×|
