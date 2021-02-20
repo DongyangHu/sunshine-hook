@@ -12,14 +12,14 @@
 ### 启动
 ```shell script
 命令: java -jar ${path}/sunshine-hook-web-${version}.jar [config...]
-示例: java -jar ./sunshine-hook-web-1.0.0-SNAPSHOT.jar
+示例: java -jar ./sunshine-hook-web-1.0.0-RELEASE.jar
 ```
 接口地址: `http://localhost:10000/sunshine-hook/event`
 
 ### 配置说明
 可直接修改项目配置文件，也可使用SpringBoot命令行参数配置
 - 格式: `--${key}=${value}`
-- 示例: `java -jar ./sunshine-hook-web-1.0.0-SNAPSHOT.jar --sunshine-hook.config.branch-filter=master`
+- 示例: `java -jar ./sunshine-hook-web-1.0.0-RELEASE.jar --sunshine-hook.config.branch-filter=master`
 
 |配置|描述|默认值|示例|必填|
 |:----|:----|:----|:----|:----|
