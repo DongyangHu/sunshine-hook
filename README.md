@@ -32,3 +32,4 @@
 |sunshine-hook.config.max-size|事件缓冲区队列大小|100|50|×|
 
 ## LICENSE
+[MIT](https://github.com/DongyangHu/sunshine-hook/blob/master/LICENSE)
