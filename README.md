@@ -14,7 +14,7 @@
 - 格式: --${key}=${value}
 - 示例: java -jar ./sunshine-hook-web-1.0.0-SNAPSHOT.jar --sunshine-hook.config.branch-filter=master
 
-|配置名|描述|默认值|示例|是否必填|
+|配置|描述|默认值|示例|必填|
 |:----|:----|:----|:----|:----|
 |server.port|服务端口|10000|8080|×|
 |sunshine-hook.config.branch-filter|数组,需要监听的分支|master|branch1,branch2|×|
