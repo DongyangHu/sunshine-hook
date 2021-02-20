@@ -59,4 +59,14 @@ public class BaseConstants {
      */
     public static final String SHELL_EXEC_OPTIONS = "-c";
 
+    /**
+     * 0
+     */
+    public static final int COMMON_INT_ZERO = 0;
+
+    /**
+     * 1
+     */
+    public static final int COMMON_INT_ONE = 1;
+
 }

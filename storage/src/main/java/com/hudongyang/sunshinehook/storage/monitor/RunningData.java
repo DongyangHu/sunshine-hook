@@ -1,8 +1,12 @@
 package com.hudongyang.sunshinehook.storage.monitor;
 
+import com.hudongyang.sunshinehook.common.constants.BaseConstants;
 import com.hudongyang.sunshinehook.common.utils.TimeUtils;
 
+import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author Dongyang.Hu
@@ -70,6 +74,14 @@ public class RunningData {
          */
         FAILED_EVENT_COUNT,
         ;
+
+        public static final Set<MonitorType> ITEM_SET = Arrays.stream(MonitorType.values()).collect(Collectors.toSet());
+
+        public static void validate(MonitorType monitorType) {
+            if (!ITEM_SET.contains(monitorType)) {
+                throw new UnsupportedOperationException(monitorType.name());
+            }
+        }
     }
 
     /**
@@ -88,6 +100,7 @@ public class RunningData {
      * @param monitorType 监控数据类型
      */
     public static void increase(MonitorType monitorType) {
+        MonitorType.validate(monitorType);
         if (monitorType == MonitorType.REQUEST_COUNT) {
             REQUEST_COUNT.incrementAndGet();
         }
@@ -103,7 +116,6 @@ public class RunningData {
         if (monitorType == MonitorType.FAILED_EVENT_COUNT) {
             FAILED_EVENT_COUNT.incrementAndGet();
         }
-        throw new UnsupportedOperationException(monitorType.name());
     }
 
     /**
@@ -113,6 +125,7 @@ public class RunningData {
      * @return 计数当前值
      */
     public static int get(MonitorType monitorType) {
+        MonitorType.validate(monitorType);
         if (monitorType == MonitorType.REQUEST_COUNT) {
             return REQUEST_COUNT.get();
         }
@@ -128,6 +141,6 @@ public class RunningData {
         if (monitorType == MonitorType.FAILED_EVENT_COUNT) {
             return FAILED_EVENT_COUNT.get();
         }
-        throw new UnsupportedOperationException(monitorType.name());
+        return BaseConstants.COMMON_INT_ZERO;
     }
 }
