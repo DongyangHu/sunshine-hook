@@ -3,7 +3,8 @@ package com.hudongyang.sunshinehook.web.config.inteceptor;
 import com.alibaba.fastjson.JSON;
 import com.hudongyang.sunshinehook.common.bean.HookEvent;
 import com.hudongyang.sunshinehook.common.bean.Result;
-import com.hudongyang.sunshinehook.common.bean.githubpayloads.PushEvent;
+import com.hudongyang.sunshinehook.common.bean.giteepayloads.GiteePushEvent;
+import com.hudongyang.sunshinehook.common.bean.githubpayloads.GitHubPushEvent;
 import com.hudongyang.sunshinehook.common.constants.BaseConstants;
 import com.hudongyang.sunshinehook.common.enums.*;
 import com.hudongyang.sunshinehook.common.utils.HmacShaUtils;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
@@ -64,8 +66,8 @@ public class HookEventInterceptor implements HandlerInterceptor {
         }
 
         // check event type
-        EventTypeEnum eventType = this.getEventType(request, source);
-        if (eventType == EventTypeEnum.UN_KNOW) {
+        EventTypeEnum<? extends EventTypeEnum<?>> eventType = this.getEventType(request, source);
+        if (Objects.isNull(eventType)) {
             WebUtils.sendResponse(response, Result.result(ResultEnum.NOT_SUPPORT_EVENT));
             RunningData.increase(RunningData.MonitorType.FILTER_COUNT);
             return false;
@@ -81,18 +83,32 @@ public class HookEventInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private void transferEvent(HttpServletRequest request, EventSourceEnum source, EventTypeEnum eventType, String requestString) {
-        HookEvent hookEvent = new HookEvent();
+    private void transferEvent(HttpServletRequest request, EventSourceEnum source,
+                               EventTypeEnum<? extends EventTypeEnum<?>> eventType, String requestString) {
+        HookEvent hookEvent = HookEvent.builder()
+                .source(source)
+                .eventType(eventType)
+                .createTime(System.currentTimeMillis())
+                .build();
+        // GitHub
         if (source == EventSourceEnum.GIT_HUB) {
-            if (eventType == EventTypeEnum.PUSH_EVENT) {
-                PushEvent event = JSON.parseObject(requestString, PushEvent.class);
+            if (eventType == GitHubEventTypeEnum.PUSH_EVENT) {
+                GitHubPushEvent event = JSON.parseObject(requestString, GitHubPushEvent.class);
                 String eventRef = event.getRef();
                 String branch = eventRef.replaceFirst(BaseConstants.GIT_HUB_BRANCH_REFS_PREFIX, "");
-                hookEvent.setSource(source);
-                hookEvent.setEventType(eventType);
                 hookEvent.setBranch(branch);
                 hookEvent.setEvent(event);
-                hookEvent.setCreateTime(System.currentTimeMillis());
+            }
+        }
+
+        // Gitee
+        if (source == EventSourceEnum.GIT_EE) {
+            if (eventType == GiteeEventTypeEnum.PUSH_EVENT) {
+                GiteePushEvent event = JSON.parseObject(requestString, GiteePushEvent.class);
+                String eventRef = event.getRef();
+                String branch = eventRef.replaceFirst(BaseConstants.GIT_EE_BRANCH_REFS_PREFIX, "");
+                hookEvent.setBranch(branch);
+                hookEvent.setEvent(event);
             }
         }
         request.setAttribute(BaseConstants.REQUEST_EVENT_PARAM, hookEvent);
@@ -105,10 +121,13 @@ public class HookEventInterceptor implements HandlerInterceptor {
      * @param requestString
      * @return
      */
-    private ResultEnum checkAuth(HttpServletRequest request, String requestString) {
+    private ResultEnum checkAuth(HttpServletRequest request, String requestString) throws UnsupportedEncodingException {
         EventSourceEnum source = this.getSource(request);
         if (source == EventSourceEnum.GIT_HUB) {
             return this.check4GitHub(request, requestString) ? ResultEnum.SUCCESS : ResultEnum.AUTH_ERROR;
+        }
+        if (source == EventSourceEnum.GIT_EE) {
+            return this.check4Gitee(request) ? ResultEnum.SUCCESS : ResultEnum.AUTH_ERROR;
         }
         return ResultEnum.AUTH_ERROR;
     }
@@ -133,6 +152,25 @@ public class HookEventInterceptor implements HandlerInterceptor {
     }
 
     /**
+     * Gitee鉴权
+     *
+     * @param request
+     * @return
+     */
+    private boolean check4Gitee(HttpServletRequest request) throws UnsupportedEncodingException {
+        String sign = request.getHeader(GiteeHeaderEnum.SIGNATURE.getHeader());
+        // 密码校验
+        if (sign.equals(config.getSecretKey())) {
+            return true;
+        }
+        // 秘钥校验
+        String timestamp = request.getHeader(GiteeHeaderEnum.TIMESTAMP.getHeader());
+        String signString = timestamp + "\n" + config.getSecretKey();
+        String sha256String = HmacShaUtils.sha256Base64AndUrlEncode(signString, config.getSecretKey());
+        return sha256String.equals(sign);
+    }
+
+    /**
      * 事件来源
      *
      * @param request
@@ -144,6 +182,10 @@ public class HookEventInterceptor implements HandlerInterceptor {
         if (Objects.nonNull(userAgent) && userAgent.toLowerCase().contains(EventSourceEnum.GIT_HUB.getSource())) {
             return EventSourceEnum.GIT_HUB;
         }
+
+        if (Objects.nonNull(userAgent) && userAgent.equals(EventSourceEnum.GIT_EE.getHeader())) {
+            return EventSourceEnum.GIT_EE;
+        }
         return EventSourceEnum.UN_KNOW;
     }
 
@@ -153,13 +195,19 @@ public class HookEventInterceptor implements HandlerInterceptor {
      * @param request
      * @return
      */
-    private EventTypeEnum getEventType(HttpServletRequest request, EventSourceEnum source) {
+    private EventTypeEnum<? extends EventTypeEnum<?>> getEventType(HttpServletRequest request, EventSourceEnum source) {
         // GitHub
         if (source == EventSourceEnum.GIT_HUB) {
             String eventType = request.getHeader(GitHubHeaderEnum.EVENT_TYPE.getHeader());
-            return EventTypeEnum.getByName(eventType);
+            return GitHubEventTypeEnum.getByType(eventType);
         }
-        return EventTypeEnum.UN_KNOW;
+
+        // Gitee
+        if (source == EventSourceEnum.GIT_EE) {
+            String eventType = request.getHeader(GiteeHeaderEnum.EVENT_TYPE.getHeader());
+            return GiteeEventTypeEnum.getByType(eventType);
+        }
+        return null;
     }
 
     /***

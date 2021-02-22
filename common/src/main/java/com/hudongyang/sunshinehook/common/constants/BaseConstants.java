@@ -45,6 +45,11 @@ public class BaseConstants {
     public static final String GIT_HUB_BRANCH_REFS_PREFIX = "refs/heads/";
 
     /**
+     * Gitee分支获取前缀
+     */
+    public static final String GIT_EE_BRANCH_REFS_PREFIX = "refs/heads/";
+
+    /**
      * 请求参数
      */
     public static final String REQUEST_EVENT_PARAM = "event";

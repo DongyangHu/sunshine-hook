@@ -22,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class HookEvent {
     private EventSourceEnum source;
-    private EventTypeEnum eventType;
+    private EventTypeEnum<? extends EventTypeEnum<?>> eventType;
     private String branch;
     private Object event;
     private long createTime;

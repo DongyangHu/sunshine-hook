@@ -15,19 +15,26 @@ public enum EventSourceEnum {
     /**
      * 未知
      */
-    UN_KNOW(-1, "un_know"),
+    UN_KNOW(-1, "un_know", "un_know"),
 
     /**
      * GitHub
      */
-    GIT_HUB(1, "github"),
+    GIT_HUB(1, "github", "GitHub-Hookshot/*"),
+
+    /**
+     * Gitee
+     */
+    GIT_EE(2, "gitee", "git-oschina-hook"),
     ;
 
     private final int code;
     private final String source;
+    private final String header;
 
-    EventSourceEnum(int code, String source) {
+    EventSourceEnum(int code, String source, String header) {
         this.code = code;
         this.source = source;
+        this.header = header;
     }
 }

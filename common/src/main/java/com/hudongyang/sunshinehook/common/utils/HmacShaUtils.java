@@ -1,10 +1,13 @@
 package com.hudongyang.sunshinehook.common.utils;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 
 import javax.crypto.Mac;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 
@@ -21,6 +24,10 @@ public class HmacShaUtils {
 
     public static String sha256String(String source, String secretKey) {
         return Hex.encodeHexString(sha256(source, secretKey));
+    }
+
+    public static String sha256Base64AndUrlEncode(String source, String secretKey) throws UnsupportedEncodingException {
+        return URLEncoder.encode(new String(Base64.encodeBase64(sha256(source, secretKey))),StandardCharsets.UTF_8.displayName());
     }
 
     public static byte[] sha1(String source, String secretKey) {
