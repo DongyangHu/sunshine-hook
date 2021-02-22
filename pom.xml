@@ -12,7 +12,7 @@
 
     <groupId>com.hudongyang</groupId>
     <artifactId>sunshine-hook</artifactId>
-    <version>1.0.0-RELEASE</version>
+    <version>1.0.1-RELEASE</version>
     <description>Web Hook for Git</description>
     <packaging>pom</packaging>
 
