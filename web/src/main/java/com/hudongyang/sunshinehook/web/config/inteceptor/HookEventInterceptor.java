@@ -166,7 +166,7 @@ public class HookEventInterceptor implements HandlerInterceptor {
         // 秘钥校验
         String timestamp = request.getHeader(GiteeHeaderEnum.TIMESTAMP.getHeader());
         String signString = timestamp + "\n" + config.getSecretKey();
-        String sha256String = HmacShaUtils.sha256Base64AndUrlEncode(signString, config.getSecretKey());
+        String sha256String = HmacShaUtils.sha256Base64(signString, config.getSecretKey());
         if (log.isDebugEnabled()) {
             log.debug("check sign, requestSign:{}, sha256String:{}", sign, sha256String);
         }

@@ -26,8 +26,8 @@ public class HmacShaUtils {
         return Hex.encodeHexString(sha256(source, secretKey));
     }
 
-    public static String sha256Base64AndUrlEncode(String source, String secretKey) throws UnsupportedEncodingException {
-        return URLEncoder.encode(new String(Base64.encodeBase64(sha256(source, secretKey))),StandardCharsets.UTF_8.displayName());
+    public static String sha256Base64(String source, String secretKey) {
+        return new String(Base64.encodeBase64(sha256(source, secretKey)));
     }
 
     public static byte[] sha1(String source, String secretKey) {

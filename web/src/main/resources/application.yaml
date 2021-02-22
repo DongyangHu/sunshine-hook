@@ -12,6 +12,6 @@ sunshine-hook:
     max-size: 100
     consume-delay: 10
     branch-filter: master
-    event-filter: push
+    event-filter: push,Push Hook
     script-path: ./trigger.sh
     secret-key: 123456
