@@ -3,7 +3,7 @@
 &nbsp;
 ![spring-boot](https://img.shields.io/badge/spring--boot-2.3.8.RELEASE-green)
 
-一个WebHook监听程序，接收Git的WebHook事件，触发执行指定脚本
+一个WebHook监听程序，接收Git的WebHook事件，触发后执行自定义脚本
 
 |类型|是否支持|备注|
 |:----|:----|:----|
